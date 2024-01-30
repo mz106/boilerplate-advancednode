@@ -7,8 +7,13 @@ const loginSuccessRedirectToProfile = async (req, res) => {
   res.redirect("/profile");
 };
 
+const renderProfile = async (req, res) => {
+  res.render("profile");
+};
+
 const loginUser = async (req, res) => {};
 
 module.exports = {
   loginSuccessRedirectToProfile,
+  renderProfile,
 };
