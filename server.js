@@ -9,6 +9,9 @@ const fccTesting = require("./freeCodeCamp/fcctesting.js");
 
 const LocalStrategy = require("passport-local");
 
+const { loginSuccessRedirectToProfile } = require("./controllers");
+const { authWithPassport } = require("./middleware");
+
 const app = express();
 
 app.set("view engine", "pug");
@@ -41,11 +44,24 @@ myDB(async (client) => {
     const myDataBase = await client.db("FCCAdvanceNode").collection("users");
 
     await app.route("/").get((req, res) => {
-      console.log(" route / hit");
       res.render("index", {
         title: "Connected to database",
         message: "Please login",
+        showLogin: true,
       });
+    });
+
+    await app.route("/login").post(
+      passport.authenticate("local", {
+        failureRedirect: "/",
+        message: "Hello from failure",
+      }),
+      loginSuccessRedirectToProfile
+    );
+
+    await app.route("/profile").get((req, res) => {
+      console.log("profile route");
+      res.render("profile");
     });
 
     passport.use(
@@ -55,6 +71,7 @@ myDB(async (client) => {
           if (err) return done(err);
           if (!user) return done(null, false);
           if (password !== user.password) return done(null, false);
+          console.log("user in local strategy: ", user);
           return done(null, user);
         });
       })
