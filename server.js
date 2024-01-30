@@ -13,8 +13,6 @@ const {
   loginSuccessRedirectToProfile,
   renderProfile,
 } = require("./controllers");
-const { authWithPassport, ensureAuthenticated } = require("./middleware");
-
 const app = express();
 
 app.set("view engine", "pug");
@@ -94,6 +92,13 @@ myDB(async (client) => {
         message: "Unable to connect to database",
       });
     });
+  }
+
+  function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+      return next();
+    }
+    res.redirect("/");
   }
 });
 
