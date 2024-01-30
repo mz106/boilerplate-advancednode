@@ -8,7 +8,7 @@ const loginSuccessRedirectToProfile = async (req, res) => {
 };
 
 const renderProfile = async (req, res) => {
-  res.render("profile");
+  res.render("profile", { username: req.user.username });
 };
 
 const loginUser = async (req, res) => {};
