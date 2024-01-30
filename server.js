@@ -9,10 +9,7 @@ const fccTesting = require("./freeCodeCamp/fcctesting.js");
 
 const LocalStrategy = require("passport-local");
 
-const {
-  loginSuccessRedirectToProfile,
-  renderProfile,
-} = require("./controllers");
+const { loginSuccessRedirectToProfile } = require("./controllers");
 const app = express();
 
 app.set("view engine", "pug");
@@ -60,7 +57,9 @@ myDB(async (client) => {
       loginSuccessRedirectToProfile
     );
 
-    await app.route("/profile").get(ensureAuthenticated, renderProfile);
+    app.route("/profile").get(ensureAuthenticated, (req, res) => {
+      res.render("profile", { username: req.user.username });
+    });
 
     passport.use(
       new LocalStrategy((username, password, done) => {
